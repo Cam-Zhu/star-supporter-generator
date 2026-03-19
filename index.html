@@ -181,6 +181,36 @@
 </head>
 <body>
 
+<!-- Password screen -->
+<div id="pwd-screen" style="
+  position:fixed; inset:0; background:var(--light);
+  display:flex; align-items:center; justify-content:center;
+  z-index:9999; font-family:'DM Sans',sans-serif;
+">
+  <div style="
+    background:white; border:1px solid var(--line); border-radius:var(--radius);
+    padding:40px 36px; max-width:360px; width:90%; text-align:center;
+    box-shadow:0 4px 24px rgba(0,0,0,0.08);
+  ">
+    <div style="font-size:2rem; margin-bottom:8px;">★</div>
+    <div style="font-family:'DM Serif Display',serif; font-size:1.5rem; margin-bottom:6px;">Stop Hate UK</div>
+    <div style="font-size:0.85rem; color:var(--mid); margin-bottom:24px;">Certificate Generator — Staff Access</div>
+    <input type="password" id="pwd-input" placeholder="Enter password"
+      onkeydown="if(event.key==='Enter')checkPwd()"
+      style="width:100%; margin-bottom:12px; padding:10px 14px; font-size:0.95rem;
+             border:1.5px solid var(--line); border-radius:6px; outline:none;
+             font-family:'DM Sans',sans-serif;"
+    />
+    <div id="pwd-error" style="color:var(--red); font-size:0.82rem; min-height:18px; margin-bottom:10px;"></div>
+    <button onclick="checkPwd()" style="
+      width:100%; padding:12px; background:var(--red); color:white; border:none;
+      border-radius:6px; font-family:'DM Sans',sans-serif; font-size:0.95rem;
+      font-weight:600; cursor:pointer; letter-spacing:0.03em;
+    ">Unlock</button>
+  </div>
+</div>
+
+<div id="app" style="display:none">
 <header>
   <div class="star-row">
     <span class="star">★</span>
@@ -368,11 +398,32 @@ function showStatus(msg, cls='') {
   el.className = 'status' + (cls ? ' ' + cls : '');
 }
 
+// ── Password ──────────────────────────────────────────────────────────────────
+function checkPwd() {
+  const input = document.getElementById('pwd-input').value;
+  if (input === 'bruLxkYTrbST') {
+    document.getElementById('pwd-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    sessionStorage.setItem('auth', '1');
+  } else {
+    document.getElementById('pwd-error').textContent = 'Incorrect password, please try again.';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+  }
+}
+
+// Check if already authenticated this session
+if (sessionStorage.getItem('auth') === '1') {
+  document.getElementById('pwd-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 const today = new Date();
 document.getElementById('cert-date').value =
   today.toISOString().slice(0,10);
 addRow();
 </script>
+</div><!-- end #app -->
 </body>
 </html>
